@@ -1,0 +1,294 @@
+<div class="container">
+  <div class="" id="page-wrapper">
+    <div class="container-fluid">
+      <div class="row row-stat">
+        <div class="col-md-12">
+          <div class="panel panel-default">
+            <div class="panel-heading panel-heading-divider">Invoice</div>
+            <div class="panel-body">
+              <form
+                class="row form-horizontal"
+                [formGroup]="invoiceForm"
+                (ngSubmit)="onSubmit()"
+              >
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="row">
+                      <label class="col-sm-3 control-label">Customer</label>
+                      <div class="col-sm-7">
+                        <input
+                          autocomplete="off"
+                          class="form-control"
+                          type="text"
+                          formControlName="customer"
+                        />
+                        <span
+                          class="text-danger"
+                          *ngIf="
+                            invoiceForm.get('customer').invalid &&
+                            invoiceForm.get('customer').touched &&
+                            invoiceForm.get('customer').errors['required']
+                          "
+                          >Customer is required</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <div class="row">
+                      <label class="col-sm-4 control-label"
+                        >Payment Method</label
+                      >
+                      <div class="col-sm-7">
+                        <div>
+                          <input
+                            id="cash"
+                            type="radio"
+                            value="0"
+                            name="paymentMethod"
+                            formControlName="paymentMethod"
+                          />
+                          <label for="cash">Cash</label>
+                        </div>
+
+                        <div>
+                          <input
+                            id="cheque"
+                            type="radio"
+                            value="1"
+                            name="paymentMethod"
+                            formControlName="paymentMethod"
+                          />
+                          <label for="cheque">Cheque</label>
+                        </div>
+                        <span
+                          class="text-danger"
+                          *ngIf="
+                            invoiceForm.get('paymentMethod').invalid &&
+                            invoiceForm.get('paymentMethod').touched &&
+                            invoiceForm.get('paymentMethod').errors['required']
+                          "
+                          >payment Method is required</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="row">
+                      <label class="col-sm-3 control-label">Invoice Date</label>
+                      <div class="col-sm-7">
+                        <input
+                          type="text"
+                          class="form-control"
+                          bsDatepicker
+                          formControlName="invoiceDate"
+                          [bsConfig]="{
+                            dateInputFormat: 'DD-MM-YYYY',
+                            showClearButton: true,
+                            clearPosition: 'center',
+                            isAnimated: true
+                          }"
+                        />
+                        <span
+                          class="text-danger"
+                          *ngIf="
+                            invoiceForm.get('invoiceDate').invalid &&
+                            invoiceForm.get('invoiceDate').touched &&
+                            invoiceForm.get('invoiceDate').errors['required']
+                          "
+                          >Invoice Date is required</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-group">
+                    <div class="row">
+                      <label class="col-sm-4 control-label">Description</label>
+                      <div class="col-sm-8">
+                        <textarea
+                          autocomplete="off"
+                          class="form-control"
+                          type="text"
+                          formControlName="description"
+                        >
+                        </textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-auto mt-2">
+                  <a routerLink="" (click)="resetInvoiceItems()" class="action-button"> <i class="fa fa-plus"></i> Add New Item</a>
+                </div>
+                
+
+                <ng-container
+                  *ngIf="
+                    currentInvoiceProductItems$
+                      | async as currentInvoiceProductItems
+                  "
+                >
+                  <div
+                    class="col-md-12"
+                    *ngIf="currentInvoiceProductItems.length > 0"
+                  >
+                    <accordion [isAnimated]="true">
+                      <accordion-group
+                        [isOpen]="true"
+                        heading="Quantities & Cost"
+                      >
+                        <div
+                          formArrayName="itemDtos"
+                          *ngFor="
+                            let item of invoiceForm.get('itemDtos')[
+                              'controls'
+                            ];
+                            let i = index
+                          "
+                        >
+                          <div [formGroupName]="i">
+                            <div class="form-group">
+                              <div class="row">
+                                <div class="col-sm-3 d-flex">
+                                  <label class="control-label mr-2">
+                                    Item Name
+                                  </label>
+                                  <div>
+                                    <input
+                                      type="text"
+                                      formControlName="itemName"
+                                      class="form-control"
+                                    />
+                                    <span
+                                      class="text-danger"
+                                      *ngIf="
+                                        item.get('itemName').invalid &&
+                                        item.get('itemName').touched &&
+                                        item.get('itemName').errors['required']
+                                      "
+                                      >Item Name is required</span
+                                    >
+                              
+                                  </div>
+                                </div>
+                                <div class="col-sm-3 d-flex">
+                                  <label class="control-label mr-2">
+                                    Quantity
+                                  </label>
+                                  <div>
+                                    <input
+                                      type="number"
+                                      min="1"
+                                      formControlName="qty"
+                                      class="form-control"
+                                      (change)="updateTotalInvoiceAmount()"
+                                    />
+                                    <span
+                                      class="text-danger"
+                                      *ngIf="
+                                        item.get('qty').invalid &&
+                                        item.get('qty').touched &&
+                                        item.get('qty').errors['required']
+                                      "
+                                      >Quantity is required</span
+                                    >
+                               
+                                    <span
+                                      class="text-danger"
+                                      *ngIf="
+                                        item.get('qty').invalid &&
+                                        item.get('qty').touched &&
+                                        item.get('qty').errors['min']
+                                      "
+                                      >Min quantity is one</span
+                                    >
+                                  </div>
+                                </div>
+                                <div class="col-sm-3 d-flex">
+                                  <label class="control-label mr-2">
+                                    Price
+                                  </label>
+                                  <div>
+                                    <input
+                                      type="number"
+                                      min="0"
+                                      formControlName="price"
+                                      class="form-control"
+                                      (change)="updateTotalInvoiceAmount()"
+                                    />
+                                    <span
+                                      class="text-danger"
+                                      *ngIf="
+                                        item.get('price').invalid &&
+                                        item.get('price').touched &&
+                                        item.get('price').errors['required']
+                                      "
+                                      >Price is required</span
+                                    >
+                                    <span
+                                      class="text-danger"
+                                      *ngIf="
+                                        item.get('price').invalid &&
+                                        item.get('price').touched &&
+                                        item.get('price').errors['pattern']
+                                      "
+                                      >Accept two decimal place</span
+                                    >
+                                  </div>
+                                </div>
+                                <div class="col-sm-3 d-flex">
+                                  <label class="control-label mr-2">
+                                    Total
+                                  </label>
+                                  <label class="control-label total">
+                                    {{
+                                      item.controls["qty"].value *
+                                        item.controls["price"].value
+                                    }}
+                                    L.E
+                                  </label>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row">
+                          <div class="col-sm-8"></div>
+                          <div class="col-sm-3 d-flex">
+                            <label class="control-label mr-2">
+                              Total P/S
+                            </label>
+                            <label class="control-label total">
+                              {{ totalInvoiceAmount }}
+                              L.E
+                            </label>
+                          </div>
+                        </div>
+                      </accordion-group>
+                    </accordion>
+                  </div>
+                </ng-container>
+                <br>
+                <br>
+                <div>
+                  <button
+                  type="submit"
+                  id="Save"
+                  class="btn btn-primary pull-right"
+                >
+                <i class="fa fa-save"> Save</i>
+                
+                </button>
+                </div>
+          
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

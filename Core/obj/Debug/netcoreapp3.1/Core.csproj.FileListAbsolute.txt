@@ -1,0 +1,9 @@
+E:\Invoice\Core\bin\Debug\netcoreapp3.1\Core.deps.json
+E:\Invoice\Core\bin\Debug\netcoreapp3.1\Core.dll
+E:\Invoice\Core\bin\Debug\netcoreapp3.1\Core.pdb
+E:\Invoice\Core\obj\Debug\netcoreapp3.1\Core.csprojAssemblyReference.cache
+E:\Invoice\Core\obj\Debug\netcoreapp3.1\Core.AssemblyInfoInputs.cache
+E:\Invoice\Core\obj\Debug\netcoreapp3.1\Core.AssemblyInfo.cs
+E:\Invoice\Core\obj\Debug\netcoreapp3.1\Core.csproj.CoreCompileInputs.cache
+E:\Invoice\Core\obj\Debug\netcoreapp3.1\Core.dll
+E:\Invoice\Core\obj\Debug\netcoreapp3.1\Core.pdb
